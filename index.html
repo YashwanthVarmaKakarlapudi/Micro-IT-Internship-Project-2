@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .quiz-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      margin: 10px 0;
+    }
+    button.choice {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background-color: #e0e0e0;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button.choice:hover {
+      background-color: #d5d5d5;
+    }
+    #nextBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+    #nextBtn:disabled {
+      background-color: #a5d6a7;
+      cursor: not-allowed;
+    }
+    #result {
+      font-size: 18px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Quiz Game</h1>
+    <div id="question">Loading...</div>
+    <ul id="choices"></ul>
+    <button id="nextBtn" disabled>Next</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const questions = [
+        {
+          question: "What is the capital of France?",
+          choices: ["Berlin", "Madrid", "Paris", "London"],
+          answer: "Paris"
+        },
+        {
+          question: "Which planet is known as the Red Planet?",
+          choices: ["Earth", "Mars", "Jupiter", "Saturn"],
+          answer: "Mars"
+        },
+        {
+          question: "Who wrote 'Hamlet'?",
+          choices: ["Charles Dickens", "William Shakespeare", "Mark Twain", "Leo Tolstoy"],
+          answer: "William Shakespeare"
+        }
+      ];
+
+      let currentQuestionIndex = 0;
+      let score = 0;
+
+      const questionEl = document.getElementById("question");
+      const choicesEl = document.getElementById("choices");
+      const nextBtn = document.getElementById("nextBtn");
+      const resultEl = document.getElementById("result");
+
+      function loadQuestion() {
+        nextBtn.disabled = true;
+        const current = questions[currentQuestionIndex];
+        questionEl.textContent = current.question;
+        choicesEl.innerHTML = "";
+        current.choices.forEach(choice => {
+          const li = document.createElement("li");
+          const button = document.createElement("button");
+          button.textContent = choice;
+          button.classList.add("choice");
+          button.onclick = () => {
+            document.querySelectorAll(".choice").forEach(btn => btn.disabled = true);
+            if (choice === current.answer) {
+              score++;
+              button.style.backgroundColor = "#a5d6a7"; // green
+            } else {
+              button.style.backgroundColor = "#ef9a9a"; // red
+            }
+            nextBtn.disabled = false;
+          };
+          li.appendChild(button);
+          choicesEl.appendChild(li);
+        });
+      }
+
+      nextBtn.onclick = () => {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+          loadQuestion();
+        } else {
+          showResult();
+        }
+      };
+
+      function showResult() {
+        questionEl.textContent = "Quiz Complete!";
+        choicesEl.innerHTML = "";
+        nextBtn.style.display = "none";
+        resultEl.textContent = `Your score: ${score}/${questions.length}`;
+      }
+
+      loadQuestion();
+    });
+  </script>
+</body>
+  </html>
